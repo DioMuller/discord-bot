@@ -46,9 +46,13 @@ namespace DiscordBot.Services
             // This value holds the offset where the prefix ends
             var argPos = 0;
 
-            if (_emote.IsEmote(message.Content) && message.Channel.Id == _config.EmoteChannelId)
+            if (_emote.HasEmote(message.Content) && message.Channel.Id == _config.EmoteChannelId)
             {
-                await message.Channel.SendMessageAsync(_emote.Enlarge(message.Content));
+                var emotes = _emote.GetEmotes(message.Content);
+
+                foreach( var emote in emotes )
+                    await message.Channel.SendMessageAsync(_emote.Enlarge(emote));
+
                 return;
             }
 
