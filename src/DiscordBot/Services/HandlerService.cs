@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Discord;
+using System.Linq;
 
 namespace DiscordBot.Services
 {
@@ -46,7 +47,7 @@ namespace DiscordBot.Services
             // This value holds the offset where the prefix ends
             var argPos = 0;
 
-            if (_emote.HasEmote(message.Content) && message.Channel.Id == _config.EmoteChannelId)
+            if (_emote.HasEmote(message.Content) && _config.EmoteChannelIds.Contains(message.Channel.Id) )
             {
                 var emotes = _emote.GetEmotes(message.Content);
 

@@ -10,7 +10,7 @@ namespace DiscordBot
         [JsonPropertyName("token")]
         public string Token { get; set; }
 
-        [JsonPropertyName("emoteChannelId")]
-        public ulong EmoteChannelId { get; set; }
+        [JsonPropertyName("emoteChannelIds")]
+        public ulong[] EmoteChannelIds { get; set; }
     }
 }
