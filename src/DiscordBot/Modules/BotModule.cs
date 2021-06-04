@@ -4,6 +4,7 @@ using DiscordBot.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace DiscordBot.Modules
@@ -11,8 +12,12 @@ namespace DiscordBot.Modules
     public class BotModule : ModuleBase<SocketCommandContext>
     {
         public BotService BotService { get; set; }
-
+        public DiscordSocketClient Discord { get; set; }
         public Config Config { get; set; }
+
+        public BotModule()
+        {
+        }
 
         [Command("name")]
         public Task NameAsync([Remainder] string name)
@@ -47,5 +52,35 @@ namespace DiscordBot.Modules
                 await ReplyAsync($"Channel {channel.Id} was not on the channel list.");
             }
         }
+
+        [Command("cache_users")]
+        public async Task Cache()
+        {
+            await ReplyAsync("Starting User Cache...");
+            await Discord.DownloadUsersAsync(new[] { Context.Guild });
+            await ReplyAsync("Finished User Cache!");
+        }
+
+        [Command("avatar")]
+        public async Task Avatar(ulong uid = 0)
+        {
+            if (uid == 0) uid = Context.User.Id;
+            var user = Discord.GetUser(uid);
+
+            if (user != null)
+                await ReplyAsync(user.GetAvatarUrl());
+            else
+                await ReplyAsync("No.");
+        }
+
+        [Command("avatar")]
+        public async Task Avatar(SocketUser user = null)
+        {
+            if (user == null) user = Context.User;
+
+            await ReplyAsync(user.GetAvatarUrl());
+        }
+
+
     }
 }

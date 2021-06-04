@@ -56,8 +56,15 @@ namespace DiscordBot
             // Add Config
             collection.AddSingleton<Config>(LoadConfig(File.ReadAllText("config.json")));
 
+            var config = new DiscordSocketConfig
+            {
+                AlwaysDownloadUsers = true,
+                MessageCacheSize = 100,
+            };
+            var client = new DiscordSocketClient(config);
+
             // Add Discord Classes
-            collection.AddSingleton<DiscordSocketClient>()
+            collection.AddSingleton(client)
                 .AddSingleton<CommandService>();
                 
             // Add Our Services
