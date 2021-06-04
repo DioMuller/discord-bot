@@ -72,13 +72,15 @@ namespace DiscordBot.Services
                         }
 
 
-                        img = _emote.DownloadAndResize(message.Content, 24);
+                        img = _emote.DownloadAndResize(attachment.ProxyUrl, 24);
                         if (img != null)
                         {
                             await message.Channel.SendFileAsync(img, "Small");
                             File.Delete(img);
                         }
                     }
+
+                    return;
                 }
 
                 if( Uri.IsWellFormedUriString(message.Content, UriKind.Absolute) )
@@ -96,6 +98,8 @@ namespace DiscordBot.Services
                         await message.Channel.SendFileAsync(img, "Small");
                         File.Delete(img);
                     }
+
+                    return;
                 }
             }
 
