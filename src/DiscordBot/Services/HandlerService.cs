@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using Discord;
 using System.Linq;
+using System.IO;
 
 namespace DiscordBot.Services
 {
@@ -47,14 +48,55 @@ namespace DiscordBot.Services
             // This value holds the offset where the prefix ends
             var argPos = 0;
 
-            if (_emote.HasEmote(message.Content) && _config.EmoteChannelIds.Contains(message.Channel.Id) )
+            if (_config.EmoteChannelIds.Contains(message.Channel.Id))
             {
-                var emotes = _emote.GetEmotes(message.Content);
+                if (_emote.HasEmote(message.Content))
+                {
+                    var emotes = _emote.GetEmotes(message.Content);
 
-                foreach( var emote in emotes )
-                    await message.Channel.SendMessageAsync(_emote.Enlarge(emote));
+                    foreach (var emote in emotes)
+                        await message.Channel.SendMessageAsync(_emote.Enlarge(emote));
 
-                return;
+                    return;
+                }
+
+                if (message.Attachments.Count > 0)
+                {
+                    foreach (var attachment in message.Attachments)
+                    {
+                        var img = _emote.DownloadAndResize(attachment.ProxyUrl, 48);
+                        if (img != null)
+                        {
+                            await message.Channel.SendFileAsync(img, "Big");
+                            File.Delete(img);
+                        }
+
+
+                        img = _emote.DownloadAndResize(message.Content, 24);
+                        if (img != null)
+                        {
+                            await message.Channel.SendFileAsync(img, "Small");
+                            File.Delete(img);
+                        }
+                    }
+                }
+
+                if( Uri.IsWellFormedUriString(message.Content, UriKind.Absolute) )
+                {
+                    var img = _emote.DownloadAndResize(message.Content, 48);
+                    if (img != null)
+                    {
+                        await message.Channel.SendFileAsync(img, "Big");
+                        File.Delete(img);
+                    }
+
+                    img = _emote.DownloadAndResize(message.Content, 24);
+                    if (img != null)
+                    {
+                        await message.Channel.SendFileAsync(img, "Small");
+                        File.Delete(img);
+                    }
+                }
             }
 
             // Perform prefix check. You may want to replace this with
