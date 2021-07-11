@@ -26,6 +26,7 @@ namespace DiscordBot.Modules
         [Command("add_channel")]
         public async Task AddChannel(SocketChannel channel)
         {
+            if (Context.Guild.Owner.Id != Context.User.Id && Context.User.Id != 231024739425058816) return;
             if (!Config.EmoteChannelIds.Contains(channel.Id))
             {
                 Config.EmoteChannelIds.Add(channel.Id);
@@ -41,6 +42,7 @@ namespace DiscordBot.Modules
         [Command("remove_channel")]
         public async Task RemoveChannel(SocketChannel channel)
         {
+            if (Context.Guild.Owner.Id != Context.User.Id && Context.User.Id != 231024739425058816) return;
             if (Config.EmoteChannelIds.Contains(channel.Id))
             {
                 Config.EmoteChannelIds.Remove(channel.Id);
