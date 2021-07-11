@@ -20,8 +20,12 @@ namespace DiscordBot.Modules
         }
 
         [Command("name")]
-        public Task NameAsync([Remainder] string name)
-            => BotService.ChangeName(name);
+        public async Task NameAsync([Remainder] string name)
+        {
+            if (Context.Guild.Owner.Id != Context.User.Id && Context.User.Id != 231024739425058816) return;
+
+            await BotService.ChangeName(name);
+        }
 
         [Command("add_channel")]
         public async Task AddChannel(SocketChannel channel)
@@ -58,6 +62,8 @@ namespace DiscordBot.Modules
         [Command("cache_users")]
         public async Task Cache()
         {
+            if (Context.Guild.Owner.Id != Context.User.Id && Context.User.Id != 231024739425058816) return;
+
             await ReplyAsync("Starting User Cache...");
             await Discord.DownloadUsersAsync(new[] { Context.Guild });
             await ReplyAsync("Finished User Cache!");
