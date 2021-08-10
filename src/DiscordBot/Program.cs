@@ -71,6 +71,7 @@ namespace DiscordBot
             collection.AddSingleton<HandlerService>()
                 .AddSingleton<EmoteService>()
                 .AddSingleton<BotService>()
+                .AddSingleton<FeedService>()
                 .BuildServiceProvider();
 
             return collection.BuildServiceProvider();
